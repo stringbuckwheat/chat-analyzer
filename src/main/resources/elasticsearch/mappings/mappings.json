@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "_class": {
+      "type": "text"
+    },
+    "content": {
+      "type": "text",
+      "analyzer": "my_nori_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    },
+    "sender": {
+      "type": "keyword"
+    }
+  }
+}
