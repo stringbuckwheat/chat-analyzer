@@ -7,8 +7,10 @@
       "type": "text",
       "analyzer": "my_nori_analyzer",
       "fields": {
-        "keyword": {
-          "type": "keyword"
+        "analyzed": {
+          "type": "text",
+          "analyzer": "my_nori_analyzer",
+          "fielddata": true
         }
       }
     },

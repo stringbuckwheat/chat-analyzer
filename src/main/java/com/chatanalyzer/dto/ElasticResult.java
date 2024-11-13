@@ -4,12 +4,12 @@ import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
 import lombok.Getter;
 
 @Getter
-public class Talkative {
-    private String name;
+public class ElasticResult {
+    private String title;
     private Long count;
 
-    public Talkative(StringTermsBucket bucket) {
-        this.name = bucket.key().stringValue();
+    public ElasticResult(StringTermsBucket bucket) {
+        this.title = bucket.key().stringValue();
         this.count = bucket.docCount();
     }
 }

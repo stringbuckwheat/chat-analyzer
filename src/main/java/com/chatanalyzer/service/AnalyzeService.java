@@ -2,8 +2,9 @@ package com.chatanalyzer.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.chatanalyzer.dto.AnalyzerResponse;
-import com.chatanalyzer.dto.Talkative;
+import com.chatanalyzer.dto.ElasticResult;
 import com.chatanalyzer.enums.ChatAggregations;
 import com.chatanalyzer.enums.ElasticIndex;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,15 @@ public class AnalyzeService {
 
     public AnalyzerResponse analyze() throws IOException {
         // 단톡방에서 말 많이 한 사람
-        List<Talkative> talkatives = getTalkatives();
+        List<ElasticResult> talkatives = getTalkatives();
 
-        return new AnalyzerResponse(talkatives);
+        // 많이 사용한 단어
+        List<ElasticResult> popularWords = getPopularWords();
+
+        return new AnalyzerResponse(talkatives, popularWords);
     }
 
-    private List<Talkative> getTalkatives() throws IOException {
+    private List<ElasticResult> getTalkatives() throws IOException {
         SearchRequest searchRequest = SearchRequest.of(s -> s
                 .index(ElasticIndex.MESSAGES.getValue())
                 .size(0)
@@ -40,6 +44,21 @@ public class AnalyzeService {
 
         return elasticsearchClient.search(searchRequest, Object.class)
                 .aggregations().get(ChatAggregations.TALKTATIVES.getValue()).sterms().buckets().array().stream()
-                .map(Talkative::new).toList();
+                .map(ElasticResult::new).toList();
+    }
+
+    private List<ElasticResult> getPopularWords() throws IOException {
+        SearchRequest searchRequest = SearchRequest.of(s -> s
+                .index(ElasticIndex.MESSAGES.getValue())
+                .size(0)
+                .aggregations(ChatAggregations.POPULAR_WORDS.getValue(), a -> a
+                        .terms(t -> t
+                                .field("content.analyzed")
+                                .size(11)))
+        );
+
+        return elasticsearchClient.search(searchRequest, Object.class)
+                .aggregations().get(ChatAggregations.POPULAR_WORDS.getValue()).sterms().buckets().array().stream()
+                .map(ElasticResult::new).toList();
     }
 }

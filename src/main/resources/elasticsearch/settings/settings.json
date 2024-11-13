@@ -7,11 +7,29 @@
           "decompound_mode": "mixed"
         }
       },
+      "filter": {
+        "exclude_consonants": {
+          "type": "pattern_replace",
+          "pattern": "^[ㄱ-ㅎㅏ-ㅣ]+$",
+          "replacement": ""
+        },
+        "nori_pos_filter": {
+          "type": "nori_part_of_speech",
+          "stoptags": [
+            "E", "IC", "J", "MAG", "MAJ", "MM", "SP", "SSC", "SSO", "SY", "UNA", "VCP", "VCN",
+            "VV", "VA", "VX", "VCP", "VCN", "XPN", "XSN", "XSV", "XR", "NP", "NR", "NP"
+          ]
+        },
+        "custom_stop_filter": {
+          "type": "stop",
+          "stopwords": ["것", "거"]
+        }
+      },
       "analyzer": {
         "my_nori_analyzer": {
           "type": "custom",
           "tokenizer": "my_nori_tokenizer",
-          "filter": ["lowercase", "stop"],
+          "filter": ["exclude_consonants", "nori_pos_filter", "custom_stop_filter"],
           "char_filter": ["html_strip"]
         }
       }

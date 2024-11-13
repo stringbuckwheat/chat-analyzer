@@ -6,9 +6,11 @@ import java.util.List;
 
 @Getter
 public class AnalyzerResponse {
-    private List<Talkative> talkatives;
+    private List<ElasticResult> talkatives;
+    private List<ElasticResult> popularWords;
 
-    public AnalyzerResponse(List<Talkative> talkatives) {
+    public AnalyzerResponse(List<ElasticResult> talkatives, List<ElasticResult> popularWords) {
         this.talkatives = talkatives;
+        this.popularWords = popularWords;
     }
 }
