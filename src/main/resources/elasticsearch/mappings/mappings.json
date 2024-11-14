@@ -16,6 +16,10 @@
     },
     "sender": {
       "type": "keyword"
+    },
+    "sentAt": {
+      "type": "date",
+      "format": "epoch_millis"
     }
   }
 }
